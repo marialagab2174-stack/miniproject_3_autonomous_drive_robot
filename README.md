@@ -51,3 +51,24 @@ source install/setup.bash
 **Développeur :** Maria Lagab  
 **Spécialité :** Robotique et Système Intelligent  
 **Machine :** Dell Latitude 7400 | Ubuntu 24.04 LTS
+
+## 🎮 Simulation & Physique Gazebo
+Le projet exploite les capacités avancées de **Gazebo (Jazzy)** pour une simulation haute fidélité :
+
+### 1. Propriétés Physiques Réelles
+- **Calcul des Inerties** : Chaque composant (châssis, roues, capteurs) possède ses matrices d'inertie calculées selon sa géométrie.
+- **Modélisation du Contact** : 
+  - **Roues motrices** : Coefficient de friction élevé (`mu1=0.2, mu2=0.2`) pour garantir la traction.
+  - **Roue Caster** : Friction quasi nulle (`mu1=0.001`) pour permettre des rotations fluides sans résistance latérale.
+
+### 2. Plugins Intégrés
+- **libgazebo_ros_diff_drive.so** : Simule le comportement cinématique du robot et publie l'odométrie sur `/odom`.
+- **libgazebo_ros_ray_sensor.so** : Transforme les données de distance Gazebo en messages `sensor_msgs/LaserScan`.
+- **libgazebo_ros_imu_sensor.so** : Fournit les données d'accélération et de vitesse angulaire avec bruit blanc simulé pour plus de réalisme.
+- **libgazebo_ros_camera.so** : Génère le flux vidéo RGB pour la perception visuelle.
+
+### 3. Environnement de Test
+- Dossier `worlds/` : Contient des fichiers `.world` incluant des obstacles statiques et dynamiques pour tester les algorithmes d'évitement.
+
+---
+*Dernière mise à jour : Mai 2026*
