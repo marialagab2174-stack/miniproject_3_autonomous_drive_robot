@@ -1,32 +1,53 @@
-# 🤖 Mini-Projet 3 : Autonomous Drive Robot (Jazzy Edition)
+# 🚀 Autonomous Drive Robot - Master Edition (ROS 2 Jazzy)
 
-Projet de robotique mobile différentielle avec navigation autonome complète.
+Ce projet implante un système complet de navigation autonome pour un robot différentiel, intégrant la fusion de capteurs et une pile de navigation avancée.
 
-## ⚙️ Stack Technique
-- **Hardware Simulation**: URDF/Xacro, Gazebo
-- **Control**: ros2_control (DiffDriveController)
-- **Perception**: LiDAR 360°, Caméra RGB
-- **Navigation**: Nav2 (SLAM Toolbox & BT Navigator)
+## 🛠 Architecture & Stack Technique
 
-## 🏗️ Structure Modulaire
-- `urdf/`: Décomposition en `robot_core`, `lidar`, et `ros2_control`.
-- `config/`: Paramètres YAML pour les contrôleurs et Nav2.
-- `scripts/`: Planificateur de mission asynchrone pour waypoints.
+### 1. Modélisation (URDF/Xacro)
+- **Châssis** : Base rectangulaire optimisée pour la stabilité.
+- **Actuateurs** : 2 roues motrices (Diff Drive) + 1 roue caster (friction réduite pour Gazebo).
+- **Capteurs** : 
+  - **LiDAR 360°** (RP Lidar A1 simulé) pour la cartographie.
+  - **IMU 6-axes** pour la détection d'orientation et d'accélération.
+  - **Caméra RGB** pour le retour visuel.
 
-## 🚀 Démarrage Rapide
+### 2. Estimation d'état (Sensor Fusion)
+- **EKF (Extended Kalman Filter)** : Fusion des données `/odom` (encodeurs) et `/imu` via le package `robot_localization` pour une estimation de position ultra-précise.
+
+### 3. Navigation & SLAM
+- **SLAM** : Utilisation de `Slam Toolbox` en mode asynchrone pour la génération de carte temps réel.
+- **Nav2 Stack** :
+  - **Smac Planner** : Génération de trajectoires fluides et cinématiquement réalisables.
+  - **Inflation Layers** : Couches de coût configurées pour maintenir une distance de sécurité de 0.55m des obstacles.
+  - **Recovery Behaviors** : Protocoles de dégagement automatique en cas de blocage.
+
+## 📂 Structure du Projet
+- `urdf/` : Fichiers Xacro modulaires (core, lidar, imu, camera, ros2_control).
+- `config/` : Paramètres YAML (`nav2`, `ekf`, `controllers`).
+- `scripts/` : Node Python d'autonomie réactive (`autonomous_drive.py`).
+- `launch/` : Scripts de lancement orchestrant la simulation et le traitement.
+
+## 🚀 Guide d'utilisation
+
+### Installation
 ```bash
+cd ~/ros2_ws
 colcon build --packages-select miniproject_3_autonomous_drive_robot
 source install/setup.bash
-
-# 1. Lancer le robot et Gazebo
-ros2 launch miniproject_3_autonomous_drive_robot launch_sim.launch.py
-
-# 2. Lancer le SLAM
-ros2 launch slam_toolbox online_async_launch.py use_sim_time:=True
-
-# 3. Lancer la Navigation
-ros2 launch nav2_bringup navigation_launch.py use_sim_time:=True
 ```
 
+### Lancement de la Simulation & Navigation
+1. **Démarrer le robot dans Gazebo** :
+   ```bash
+   ros2 launch miniproject_3_autonomous_drive_robot launch_sim.launch.py
+   ```
+2. **Lancer la Navigation Avancée** :
+   ```bash
+   ros2 launch nav2_bringup navigation_launch.py use_sim_time:=True
+   ```
+
 ---
-**Maria Lagab** - *Spécialité Robotique et Système Intelligent*
+**Développeur :** Maria Lagab  
+**Spécialité :** Robotique et Système Intelligent  
+**Machine :** Dell Latitude 7400 | Ubuntu 24.04 LTS
